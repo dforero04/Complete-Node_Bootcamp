@@ -32,6 +32,10 @@ Read and Write to File System
 SERVER
  *******************/
 
+// This top level code is only executed at the start of the program, so it can be done synchronously
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+const dataObject = JSON.parse(data)
+
 const server = http.createServer((req, res) => {
   const pathname = req.url;
 
@@ -39,6 +43,9 @@ const server = http.createServer((req, res) => {
     res.end('This is the OVERVIEW!')
   }else if(pathname === '/product'){
     res.end('This is the PRODUCT')
+  }else if(pathname === '/api'){
+    res.writeHead(200, {'Content-type': 'application/json'})
+    res.end(data)
   }else{
     // Header information should always be set before the res.end
     res.writeHead(404, {
