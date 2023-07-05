@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac9ca291-7597-4d06-94ce-88cd3d8da160" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/txt/append.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/txt/read-this.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/txt/start.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/txt/input.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/txt/output.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,11 +46,13 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.editor",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/txt" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/.idea/Section 2: Intro to Node and NPM/Module 1: Core Modules" />
       <recent name="$PROJECT_DIR$/.idea/Section 2: Intro to Node and NPM" />
@@ -59,7 +66,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1688577417497</updated>
-      <workItem from="1688577419126" duration="2238000" />
+      <workItem from="1688577419126" duration="4011000" />
     </task>
     <servers />
   </component>

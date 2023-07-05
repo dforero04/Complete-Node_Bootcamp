@@ -1,16 +1,23 @@
 const fs = require('fs')
 
-// Used to read and write files from and to the file system SYNCHRONOUSLY
-// const textInput = fs.readFileSync('./input.txt', 'utf-8');
+// Used to read and write files from and to the file system SYNCHRONOUSLY (BLOCKING)
+// const textInput = fs.readFileSync('./txt/input.txt', 'utf-8');
 // console.log(textInput)
 //
 // const textOutput = `This is what we know about the avocado: ${textInput}`;
-// fs.writeFileSync('./output.txt', textOutput);
+// fs.writeFileSync('./txt/output.txt', textOutput);
 // console.log('File written')
 
-// Used to read and write files from and to the file system ASYNCHRONOUSLY
-fs.readFile('./input.txt', 'utf-8', (err, data) => {
-  console.log(data);
+// Used to read and write files from and to the file system ASYNCHRONOUSLY (NON-BLOCKING)
+// This uses callback hell, and the better method will be discussed later
+fs.readFile('./txt/start.txt', 'utf-8', (err, data1) => {
+  if(err) return console.error('Error!')
+  fs.readFile(`./txt/${data1}.txt`, 'utf-8', (err, data2) => {
+    fs.readFile(`./txt/append.txt`, 'utf-8', (err, data3) => {
+      fs.writeFile('./txt/final.txt', `${data2}\n${data3}`, 'utf-8', err => {
+        console.log('Your file has been written!')
+      })
+    })
+  })
 });
 console.log('Reading file...')
-
