@@ -40,23 +40,23 @@ const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObject = JSON.parse(data)
 
 const server = http.createServer((req, res) => {
-  const { pathname, searchParams } = new URL(req.url, `http://${req.headers.host}`);
+  const {pathname, searchParams} = new URL(req.url, `https://${req.headers.host}`);
   const id = searchParams.get('id');
 
   // OVERVIEW PAGE
-  if(pathname === '/' || pathname === '/overview'){
+  if (pathname === '/' || pathname === '/overview') {
     res.writeHead(200, {
       'Content-type': 'text/html'
     })
     // This takes all the objects from the data.json file and joins all the HTML into one string
     const cardsHtml = dataObject.map(item =>
-      replaceTemplate(templateCard, item)
+        replaceTemplate(templateCard, item)
     ).join('');
 
     res.end(templateOverview.replace(/{%PRODUCT_CARD%}/g, cardsHtml));
 
-  // PRODUCT PAGE
-  }else if(pathname === `/product`){
+    // PRODUCT PAGE
+  } else if (pathname === '/product') {
     res.writeHead(200, {
       'Content-type': 'text/html'
     })
@@ -64,14 +64,14 @@ const server = http.createServer((req, res) => {
     const productHtml = replaceTemplate(templateProduct, dataObject[id])
     res.end(productHtml)
 
-  // API
-  }else if(pathname === '/api'){
+    // API
+  } else if (pathname === '/api') {
     res.writeHead(200, {'Content-type': 'application/json'})
     res.end(data)
 
-  // NOT FOUND PAGE
-  }else{
-  // Header information should always be set before the res.end
+    // NOT FOUND PAGE
+  } else {
+    // Header information should always be set before the res.end
     res.writeHead(404, {
       'Content-type': 'text/html',
       'my-own-header': 'hello-world' // You can also create you own header information
