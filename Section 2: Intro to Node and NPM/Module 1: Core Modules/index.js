@@ -1,6 +1,5 @@
 const fs = require('fs')
 const http = require('http')
-const url = require('url')
 
 /*
 Read and Write to File System
@@ -55,7 +54,8 @@ const replaceTemplate = (tempCard, product) => {
 }
 
 const server = http.createServer((req, res) => {
-  const pathname = req.url;
+  const { pathname, searchParams } = new URL(req.url, `http://${req.headers.host}`);
+  const id = searchParams.get('id');
 
   // OVERVIEW PAGE
   if(pathname === '/' || pathname === '/overview'){
@@ -70,11 +70,13 @@ const server = http.createServer((req, res) => {
     res.end(templateOverview.replace(/{%PRODUCT_CARD%}/g, cardsHtml));
 
   // PRODUCT PAGE
-  }else if(pathname === '/product'){
+  }else if(pathname === `/product`){
     res.writeHead(200, {
       'Content-type': 'text/html'
     })
-    res.end(templateProduct)
+
+    const productHtml = replaceTemplate(templateProduct, dataObject[id])
+    res.end(productHtml)
 
   // API
   }else if(pathname === '/api'){
