@@ -1,0 +1,15 @@
+{
+  "name": "node-behind-the-scenes",
+  "version": "1.0.0",
+  "description": "Section 3: Node Behind the Scenes",
+  "main": "index.js",
+  "scripts": {
+    "startStream": "nodemon streams.js",
+    "startEvents": "nodemon events.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
