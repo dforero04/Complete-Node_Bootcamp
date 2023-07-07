@@ -5,9 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac9ca291-7597-4d06-94ce-88cd3d8da160" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/templates/template-card.html" beforeDir="false" afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/templates/template-card.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Complete Node Bootcamp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Complete Node Bootcamp.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Section 2: Intro to Node and NPM/Module 1: Core Modules/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +68,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1688577417497</updated>
-      <workItem from="1688577419126" duration="12533000" />
+      <workItem from="1688577419126" duration="12884000" />
     </task>
     <servers />
   </component>
