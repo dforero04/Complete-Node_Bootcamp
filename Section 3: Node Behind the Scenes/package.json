@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "startStream": "nodemon streams.js",
-    "startEvents": "nodemon events.js"
+    "startEvents": "nodemon events.js",
+    "startModules": "nodemon modules.js"
   },
   "author": "",
   "license": "ISC",
