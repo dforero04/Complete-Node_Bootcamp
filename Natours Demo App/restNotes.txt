@@ -1,0 +1,14 @@
+REST = Representational State Transfer
+ - REST Architecture
+ - - Separate API into logical resources
+ - - - Resource: object or representation of something, which has data associated to it.
+ - - - Any info that can be named can be a resource.
+ - - Expose structured, resource-based URLs (endpoints)
+ - - - Endpoints should contain only resources (nouns) and use HTTP methods for actions.
+ - - - e.g. POST /tours to Create, GET /tours/7 to Read, PUT or PATCH /tours/7 to Update, DELETE /tours/7 to Delete
+ - - Use HTTP methods (verbs)
+ - - Send data as JSON (usually)
+ - - Be stateless
+ - - - All is state is handled on the client.
+ - - - This means that each request must contain all the information necessary to process a certain request.
+ - - - The server should NOT have to remember previous requests.
