@@ -12,6 +12,10 @@ const app = express();
 // This one adds the data from the body to the request
 app.use(morgan('dev'));
 app.use(express.json());
+
+//How to serve static files
+app.use(express.static(`${__dirname}/public`));
+
 // Custom middleware function
 // applies to each and every request
 app.use((req, res, next) => {
