@@ -5,10 +5,18 @@ const tours = JSON.parse(
 );
 
 exports.checkId = (req, res, next, val) => {
-  console.log(`Tour id is: ${val}`)
+  console.log(`Tour id is: ${val}`);
   if (val > tours.length - 1) return res.status(404).json({
     status: 'fail',
     message: 'Invalid tour ID!'
+  });
+  next();
+}
+
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) return res.status(400).json({
+    status: 'fail',
+    message: 'Tour name and price not provided!'
   });
   next();
 }
@@ -30,7 +38,7 @@ exports.createTour = (req, res) => {
   const newTour = Object.assign({id: newId}, req.body);
 
   tours.push(newTour);
-  fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
+  fs.writeFile(`${__dirname}/../dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
     res.status(201).json({
       status: "success",
       tours: newTour

@@ -1,6 +1,6 @@
 const express = require('express');
 const {
-  getAllTours, createTour, getTourById, updateTour, deleteTour, checkId
+  getAllTours, createTour, getTourById, updateTour, deleteTour, checkId, checkBody
 } = require('./../controllers/tourController')
 
 // These routes are also part of the middleware stack
@@ -11,7 +11,8 @@ const router = express.Router();
 router.param('id', checkId);
 
 // You can also chain HTTP methods from the route method if they all use the same route
-router.route('/').get(getAllTours).post(createTour);
+// You can provide a middleware function inside these routes, like the checkBody() middleware function
+router.route('/').get(getAllTours).post(checkBody, createTour);
 router.route('/:id').get(getTourById).patch(updateTour).delete(deleteTour);
 
 module.exports = router;
