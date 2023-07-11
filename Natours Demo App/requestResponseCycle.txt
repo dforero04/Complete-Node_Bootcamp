@@ -1,0 +1,7 @@
+Middleware = everything that happens in between the request and the response
+- All the middleware in an app is called the Middleware Stack
+- Ordered as defined in the codebase
+- Req/Res objects are passed to each piece of middleware
+- - A next() is called to pass the req/res object to the next piece of middleware
+- - - Done behind the scenes
+- Request - Response Cycle is complete when you send the complete response
