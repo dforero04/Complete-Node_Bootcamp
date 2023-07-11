@@ -10,7 +10,9 @@ const app = express();
 // Middleware
 // A step the request goes through before hitting the endpoints.
 // This one adds the data from the body to the request
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 app.use(express.json());
 
 //How to serve static files
