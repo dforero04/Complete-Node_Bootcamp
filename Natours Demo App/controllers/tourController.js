@@ -28,7 +28,7 @@ const Tour = require('../model/tourModel');
 
 ////////////////////////////////////////////
 // Route Handlers
-exports.getAllTours = async (req, res) => {
+exports.getAllTours = async (req, res, next) => {
   try {
     console.log(req.query);
     // Filtering
@@ -39,18 +39,38 @@ exports.getAllTours = async (req, res) => {
     // Advanced Filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    console.log(JSON.parse(queryStr));
 
     // One way to include a query string for filtering results
-    const query = Tour.find(JSON.parse(queryStr));
+    let query = Tour.find(JSON.parse(queryStr));
 
-    // // Another way to include a query string
-    // const tours = await Tour.find()
-    //   .where('duration')
-    //   .equals(5)
-    //   .where('difficulty')
-    //   .equals('easy');
+    // Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
 
+    // Field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      // Minus sign is for excluding a field
+      query = query.select('-__v');
+    }
+
+    // Pagination
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 100;
+    const skip = (page - 1) * limit;
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw Error('This page does not exist!');
+    }
+    query = query.skip(skip).limit(limit);
+
+    // Finally get result of Query Promise
     const tours = await query;
 
     res.status(200).json({
