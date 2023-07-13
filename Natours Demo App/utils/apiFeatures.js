@@ -1,6 +1,6 @@
 /*
   This class is used to allow for different features on our API.
-  
+
   @param    query     An Express query function that will be used to get data from the database
   @param    queryStr  The query parameters provided on the URL
  */
