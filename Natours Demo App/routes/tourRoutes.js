@@ -6,7 +6,8 @@ const {
   updateTour,
   deleteTour,
   aliasTopTours,
-  getTourStats
+  getTourStats,
+  getMonthlyPlan
 } = require('../controllers/tourController');
 
 // These routes are also part of the middleware stack
@@ -17,6 +18,7 @@ const router = express.Router();
 // Needs to be placed above the '/:id' route
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 router.route('/tour-stats').get(getTourStats);
+router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 // You can also chain HTTP methods from the route method if they all use the same route
 // You can provide a middleware function inside these routes, like the checkBody() middleware function
