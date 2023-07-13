@@ -7,7 +7,12 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A tour must have a name!'],
       unique: true,
-      trim: true
+      trim: true,
+      maxLength: [40, 'Tour name must be less than or equal to 40 characters!'],
+      minLength: [
+        10,
+        'Tour name must be greater than or equal to 10 characters!'
+      ]
     },
     duration: {
       type: Number,
@@ -19,11 +24,17 @@ const tourSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      required: [true, 'A tour must have a difficulty']
+      required: [true, 'A tour must have a difficulty'],
+      enum: {
+        values: ['easy', 'medium', 'hard'],
+        message: 'Difficulty must be easy, medium, or hard!'
+      }
     },
     ratingsAverage: {
       type: Number,
-      default: 4.5
+      default: 4.5,
+      min: [1, 'Rating must be greater than or equal to 1.0'],
+      max: [5, 'Rating must be less than or equal to 5.0']
     },
     ratingsQuantity: {
       type: Number,
@@ -33,7 +44,16 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'A tour must have a price!']
     },
-    discountPrice: Number,
+    discountPrice: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          // This only points to current document on NEW document creation, not UPDATE document
+          return val < this.price;
+        },
+        message: 'Discount price ({VALUE}) should be less than regular price!'
+      }
+    },
     summary: {
       type: String,
       trim: true,
