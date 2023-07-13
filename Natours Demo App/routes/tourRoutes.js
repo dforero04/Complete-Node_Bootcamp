@@ -4,15 +4,19 @@ const {
   createTour,
   getTourById,
   updateTour,
-  deleteTour
+  deleteTour,
+  aliasTopTours,
+  getTourStats
 } = require('../controllers/tourController');
 
 // These routes are also part of the middleware stack
 // This is called mounting a router. It creates a router for a specific subdomain
 const router = express.Router();
 
-// // This middleware function will only run on this router
-// router.param('id', checkId);
+// Example for Route Alias
+// Needs to be placed above the '/:id' route
+router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
+router.route('/tour-stats').get(getTourStats);
 
 // You can also chain HTTP methods from the route method if they all use the same route
 // You can provide a middleware function inside these routes, like the checkBody() middleware function
