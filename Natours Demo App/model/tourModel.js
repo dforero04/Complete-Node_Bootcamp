@@ -5,29 +5,29 @@ const tourSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'A tour must have a name!'],
+      required: [true, 'A tour must have a name'],
       unique: true,
       trim: true,
-      maxLength: [40, 'Tour name must be less than or equal to 40 characters!'],
+      maxLength: [40, 'Tour name must be less than or equal to 40 characters'],
       minLength: [
         10,
-        'Tour name must be greater than or equal to 10 characters!'
+        'Tour name must be greater than or equal to 10 characters'
       ]
     },
     duration: {
       type: Number,
-      required: [true, 'A tour must have a duration!']
+      required: [true, 'A tour must have a duration']
     },
     maxGroupSize: {
       type: Number,
-      required: [true, 'A tour must have a group size!']
+      required: [true, 'A tour must have a group size']
     },
     difficulty: {
       type: String,
       required: [true, 'A tour must have a difficulty'],
       enum: {
         values: ['easy', 'medium', 'hard'],
-        message: 'Difficulty must be easy, medium, or hard!'
+        message: 'Difficulty must be easy, medium, or hard'
       }
     },
     ratingsAverage: {
@@ -42,7 +42,7 @@ const tourSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: [true, 'A tour must have a price!']
+      required: [true, 'A tour must have a price']
     },
     discountPrice: {
       type: Number,
@@ -51,13 +51,13 @@ const tourSchema = new mongoose.Schema(
           // This only points to current document on NEW document creation, not UPDATE document
           return val < this.price;
         },
-        message: 'Discount price ({VALUE}) should be less than regular price!'
+        message: 'Discount price ({VALUE}) should be less than regular price'
       }
     },
     summary: {
       type: String,
       trim: true,
-      required: [true, 'A tour must have a summary!']
+      required: [true, 'A tour must have a summary']
     },
     description: {
       type: String,
@@ -65,7 +65,7 @@ const tourSchema = new mongoose.Schema(
     },
     imageCover: {
       type: String,
-      required: [true, 'A tour must have a cover image!']
+      required: [true, 'A tour must have a cover image']
     },
     images: [String],
     createdAt: {
@@ -130,7 +130,6 @@ tourSchema.post(/^find/, function (docs, next) {
 // The THIS keyword points to the current aggregate
 tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this.pipeline());
   next();
 });
 

@@ -1,4 +1,3 @@
-const { del } = require('express/lib/application');
 const Tour = require('../model/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
@@ -128,7 +127,8 @@ exports.createTour = catchAsync(async (req, res, next) => {
 
 exports.updateTour = catchAsync(async (req, res, next) => {
   const updatedTour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true
+    new: true,
+    runValidators: true
   });
 
   if (!updatedTour) {
