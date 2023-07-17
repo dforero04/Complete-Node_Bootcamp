@@ -9,7 +9,7 @@ const {
   getTourStats,
   getMonthlyPlan
 } = require('../controllers/tourController');
-const { protect } = require('../controllers/authController');
+const { protect, restrictTo } = require('../controllers/authController');
 
 // These routes are also part of the middleware stack
 // This is called mounting a router. It creates a router for a specific subdomain
@@ -24,6 +24,10 @@ router.route('/monthly-plan/:year').get(getMonthlyPlan);
 // You can also chain HTTP methods from the route method if they all use the same route
 // You can provide a middleware function inside these routes, like the checkBody() middleware function
 router.route('/').get(protect, getAllTours).post(createTour);
-router.route('/:id').get(getTourById).patch(updateTour).delete(deleteTour);
+router
+  .route('/:id')
+  .get(getTourById)
+  .patch(updateTour)
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 module.exports = router;
