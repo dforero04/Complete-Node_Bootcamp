@@ -54,6 +54,7 @@ const userSchema = mongoose.Schema({
   }
 });
 
+// Middleware function to check if password has been modified, and if true, then save an encrypted password
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
@@ -62,6 +63,15 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// Middleware function to check if password has been modified or if the document is new, and if true, then update when the password was changed
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+// Static function used for login to check if provided password is correct for user
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
@@ -69,6 +79,7 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
+// Static function used for protected routes to check if user password was changed after token was issued
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
@@ -80,10 +91,12 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
+// Static function used for creating and saving a reset password token for user
 userSchema.methods.createResetPasswordToken = function () {
+  // Create random reset password token
   const resetToken = crypto.randomBytes(32).toString('hex');
 
-  // Save encrypted reset token to database to verify later
+  // Save encrypted reset password token to database to verify later
   this.passwordResetToken = crypto
     .createHash('sha256')
     .update(resetToken)

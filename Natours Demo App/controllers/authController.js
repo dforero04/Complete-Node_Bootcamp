@@ -1,10 +1,12 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../model/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 
+// JWT function that creates a JWT based on header, payload (user id and expires in), and secret
 const signToken = (id) =>
   jwt.sign({ id: id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
@@ -54,6 +56,7 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
+// Middleware function used for protected routes
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   // Get token and verify it's there
@@ -69,12 +72,14 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // Verify token
+  // Verify token by promisifying verify()
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  // Check if user still exists
+
+  // Check if user still exists by using decoded JWT token
   const currentUser = await User.findById(decoded.id);
   if (!currentUser)
     return next(new AppError('You are not a registered user.', 401));
+
   // Check if user changed password after the token was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
@@ -82,10 +87,12 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
+  // Add user info to request and continue to next middleware function
   req.user = currentUser;
   next();
 });
 
+// Middleware function used to restrict specific routes to specific user roles
 // Restricts this route to roles passed in.
 exports.restrictTo =
   (...roles) =>
@@ -107,7 +114,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetToken = user.createResetPasswordToken();
   await user.save({ validateBeforeSave: false });
 
-  // Send to users email
+  // Send reset password token to user's email
   const resetUrl = `${req.protocol}://${req.get(
     'host'
   )}/api/v1/users/resetPassword/${resetToken}`;
@@ -137,4 +144,37 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.resetPassword = (req, res, next) => {};
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  // Encrypt URL param token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  // Get user based on encrypted token and if token is not expired
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() }
+  });
+
+  // If token is not expired and there is a user, set new password
+  if (!user)
+    return next(
+      new AppError('Reset password token is invalid or has expired', 400)
+    );
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  // Actually modify user document
+  await user.save();
+  // Update changedPasswordAt property for user
+
+  // Log user in (send JWT)
+  const token = signToken(user._id);
+  res.status(200).json({
+    status: 'success',
+    token
+  });
+});
