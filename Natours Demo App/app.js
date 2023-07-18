@@ -3,6 +3,7 @@ const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -28,6 +29,19 @@ app.use(express.json({ limit: '10kb' }));
 
 // Data sanitization middleware against NoSQL query injection
 app.use(mongoSanitize());
+
+// Prevent parameter pollution (cleans up query string in URL except on whitelist)
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty'
+    ]
+  })
+);
 
 // Data sanitization middleware against XSS
 
