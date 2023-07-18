@@ -12,6 +12,15 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 
+const createSendToken = (user, statusCode, res) => {
+  const jwtToken = signToken(user._id);
+  res.status(statusCode).json({
+    status: 'success',
+    jwtToken,
+    user: { user }
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -22,15 +31,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser
-    }
-  });
+  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -48,12 +49,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
   //If everything is ok, send token to client
-
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token
-  });
+  createSendToken(user, 200, res);
 });
 
 // Middleware function used for protected routes
@@ -172,9 +168,31 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // Update changedPasswordAt property for user
 
   // Log user in (send JWT)
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token
-  });
+  createSendToken(user, 200, res);
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const { passwordCurrent, passwordUpdate, passwordUpdateConfirm } = req.body;
+
+  // Get user
+  const currentUser = await User.findById(req.user.id).select('+password');
+
+  // Check if POSTed password is correct
+  if (
+    !(await currentUser.correctPassword(passwordCurrent, currentUser.password))
+  )
+    return next(
+      new AppError(
+        'Your current password does not match what you provided',
+        400
+      )
+    );
+
+  // Then update password
+  currentUser.password = passwordUpdate;
+  currentUser.passwordConfirm = passwordUpdateConfirm;
+  await currentUser.save();
+
+  // Login user by sending back JWT
+  createSendToken(currentUser, 200, res);
 });
