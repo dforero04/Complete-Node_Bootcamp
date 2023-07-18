@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 
 const tourRouter = require('./routes/tourRoutes');
@@ -11,10 +12,11 @@ const app = express();
 ////////////////////////////////////////////
 // Middleware
 // A step the request goes through before hitting the endpoints.
-// This one adds the data from the body to the request
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// This one adds the data from the body to the request
 app.use(express.json());
 
 //How to serve static files
@@ -26,6 +28,14 @@ app.use(express.static(`${__dirname}/public`));
 //   console.log('Hello from from the middleware!');
 //   next();
 // });
+
+// Express rate limit, which allows only a certain number of requests from a specific IP
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP! Please try again in 1 hour'
+});
+app.use('/api', limiter);
 
 // Routes
 app.use('/api/v1/tours', tourRouter);
