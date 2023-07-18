@@ -1,6 +1,8 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -12,14 +14,24 @@ const app = express();
 ////////////////////////////////////////////
 // Middleware
 // A step the request goes through before hitting the endpoints.
+
+// Set security HTTP headers
+app.use(helmet());
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// This one adds the data from the body to the request
-app.use(express.json());
+// This one adds the data from the body to the request (body parser)
+app.use(express.json({ limit: '10kb' }));
 
-//How to serve static files
+// Data sanitization middleware against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data sanitization middleware against XSS
+
+// Serving static files
 app.use(express.static(`${__dirname}/public`));
 
 // // Custom middleware function
