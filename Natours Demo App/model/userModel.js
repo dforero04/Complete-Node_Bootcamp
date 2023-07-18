@@ -51,6 +51,10 @@ const userSchema = mongoose.Schema({
   },
   passwordResetExpires: {
     type: Date
+  },
+  activeUser: {
+    type: Boolean,
+    select: false
   }
 });
 
@@ -68,6 +72,12 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+// Middleware function to exclude inactive users from find queries
+userSchema.pre(/^find/, async function (next) {
+  this.find({ activeUser: { $ne: false } });
   next();
 });
 
