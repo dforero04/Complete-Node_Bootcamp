@@ -117,6 +117,15 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// Virtual populate
+// foreignField is the name of the field in the referencing model
+// localField is the name of the field in the current model
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
+});
+
 // Document Middleware
 // Runs before provided mongoDB method
 // The THIS keyword points to the current document
