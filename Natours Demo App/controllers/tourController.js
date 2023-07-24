@@ -30,6 +30,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 });
 
 exports.getTourById = catchAsync(async (req, res, next) => {
+  // This populate() function will display more data from another document instead of keeping it in the current document
   const tour = await Tour.findById(req.params.id);
 
   if (!tour) {

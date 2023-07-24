@@ -102,11 +102,14 @@ const tourSchema = new mongoose.Schema(
         description: String,
         day: Number
       }
-    ]
+    ],
+    // This is an example of child referencing
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }]
   },
   {
     // Used to show virtual properties in the results
-    toJSON: { virtuals: true }
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -122,11 +125,14 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-// tourSchema.pre('save', (next) => {
-//   console.log('will save document');
+// // This is an example of embedding a document into another document
+// // User document embedded in the "guides" property of Tour document
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
 //   next();
 // });
-//
+
 // // Runs after provided mongoDB method
 // tourSchema.post('save', (doc, next) => {
 //   console.log(doc);
@@ -141,6 +147,14 @@ tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
 
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt'
+  });
   next();
 });
 
