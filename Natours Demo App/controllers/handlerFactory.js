@@ -1,9 +1,33 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const APIFeatures = require('../utils/apiFeatures');
 
-exports.deleteOne = (Model) =>
+exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
-    const document = await Model.findByIdAndDelete(req.params.id);
+    // This filter is used to get a specific tour ID and the reviews for that tour
+    const filter = req.params.tourId ? { tour: req.params.tourId } : {};
+
+    const features = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const docs = await features.query;
+
+    res.status(200).json({
+      status: 'success',
+      results: docs.length,
+      data: {
+        docs
+      }
+    });
+  });
+
+exports.getOne = (Model, popOptions) =>
+  catchAsync(async (req, res, next) => {
+    const document = popOptions
+      ? await Model.findById(req.params.id).populate(popOptions)
+      : await Model.findById(req.params.id);
 
     if (!document) {
       return next(
@@ -14,9 +38,19 @@ exports.deleteOne = (Model) =>
       );
     }
 
-    res.status(204).json({
+    res.status(200).json({
       status: 'success',
-      data: null
+      data: { document }
+    });
+  });
+
+exports.createOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const savedDoc = await Model.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: savedDoc
     });
   });
 
@@ -42,12 +76,21 @@ exports.updateOne = (Model) =>
     });
   });
 
-exports.createOne = (Model) =>
+exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const savedDoc = await Model.create(req.body);
+    const document = await Model.findByIdAndDelete(req.params.id);
 
-    res.status(201).json({
+    if (!document) {
+      return next(
+        new AppError(
+          `No ${Model.collection.collectionName} with ${req.params.id} ID found!`,
+          404
+        )
+      );
+    }
+
+    res.status(204).json({
       status: 'success',
-      data: savedDoc
+      data: null
     });
   });

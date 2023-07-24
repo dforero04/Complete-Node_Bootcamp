@@ -1,8 +1,6 @@
 const Tour = require('../model/tourModel');
 const factory = require('./handlerFactory');
-const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -13,65 +11,11 @@ exports.aliasTopTours = (req, res, next) => {
 
 ////////////////////////////////////////////
 // Route Handlers
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const tours = await features.query;
-
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours
-    }
-  });
-});
-
-exports.getTourById = catchAsync(async (req, res, next) => {
-  // This populate() function will display more data from another document instead of keeping it in the current document
-  const tour = await Tour.findById(req.params.id).populate('reviews');
-
-  if (!tour) {
-    return next(new AppError(`No tour with ${req.params.id} ID found!`, 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: { tour }
-  });
-});
-
-exports.getTourStats = catchAsync(async (req, res, next) => {
-  const stats = await Tour.aggregate([
-    { $match: { ratingsAverage: { $gte: 4.5 } } },
-    {
-      $group: {
-        _id: { $toUpper: '$difficulty' },
-        numTours: { $sum: 1 },
-        numRatings: { $sum: '$ratingsQuantity' },
-        avgRating: { $avg: '$ratingsAverage' },
-        avgPrice: { $avg: '$price' },
-        minPrice: { $min: '$price' },
-        maxPrice: { $max: '$price' }
-      }
-    },
-    {
-      $sort: { avgPrice: 1 }
-    }
-    // You can continue to match to narrow your results
-    // {
-    //   $match: { _id: { $ne: 'EASY' } }
-    // }
-  ]).exec();
-
-  res.status(200).json({
-    status: 'success',
-    data: { stats }
-  });
-});
+exports.getAllTours = factory.getAll(Tour);
+exports.getTourById = factory.getOne(Tour, { path: 'reviews' });
+exports.createTour = factory.createOne(Tour);
+exports.updateTour = factory.updateOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   const year = Number(req.params.year);
@@ -119,9 +63,34 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createTour = factory.createOne(Tour);
-exports.updateTour = factory.updateOne(Tour);
-exports.deleteTour = factory.deleteOne(Tour);
+exports.getTourStats = catchAsync(async (req, res, next) => {
+  const stats = await Tour.aggregate([
+    { $match: { ratingsAverage: { $gte: 4.5 } } },
+    {
+      $group: {
+        _id: { $toUpper: '$difficulty' },
+        numTours: { $sum: 1 },
+        numRatings: { $sum: '$ratingsQuantity' },
+        avgRating: { $avg: '$ratingsAverage' },
+        avgPrice: { $avg: '$price' },
+        minPrice: { $min: '$price' },
+        maxPrice: { $max: '$price' }
+      }
+    },
+    {
+      $sort: { avgPrice: 1 }
+    }
+    // You can continue to match to narrow your results
+    // {
+    //   $match: { _id: { $ne: 'EASY' } }
+    // }
+  ]).exec();
+
+  res.status(200).json({
+    status: 'success',
+    data: { stats }
+  });
+});
 
 // // Used before DB
 // const tours = JSON.parse(
