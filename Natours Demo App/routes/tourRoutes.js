@@ -9,11 +9,14 @@ const {
   getTourStats,
   getMonthlyPlan
 } = require('../controllers/tourController');
+const ReviewRouter = require('./reviewRoutes');
 const { protect, restrictTo } = require('../controllers/authController');
 
 // These routes are also part of the middleware stack
 // This is called mounting a router. It creates a router for a specific subdomain
 const router = express.Router();
+
+router.use('/:tourId/reviews', ReviewRouter);
 
 // Example for Route Alias
 // Needs to be placed above the '/:id' route
