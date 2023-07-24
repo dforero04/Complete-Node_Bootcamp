@@ -19,3 +19,35 @@ exports.deleteOne = (Model) =>
       data: null
     });
   });
+
+exports.updateOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const updatedDoc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!updatedDoc) {
+      return next(
+        new AppError(
+          `No ${Model.collection.collectionName} with ${req.params.id} ID found!`,
+          404
+        )
+      );
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: { updatedDoc }
+    });
+  });
+
+exports.createOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const savedDoc = await Model.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: savedDoc
+    });
+  });
