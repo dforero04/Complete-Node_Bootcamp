@@ -142,12 +142,6 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 
-// // Runs after provided mongoDB method
-// tourSchema.post('save', (doc, next) => {
-//   console.log(doc);
-//   next();
-// });
-
 // Query Middleware
 // Runs before provided mongoDB query method
 // This REGEX makes it run for all find methods
