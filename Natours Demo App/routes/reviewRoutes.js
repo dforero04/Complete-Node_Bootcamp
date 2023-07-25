@@ -10,17 +10,20 @@ const {
 const { protect, restrictTo } = require('../controllers/authController');
 
 // mergeParams is used for nested routes
-const router = express.Router({ mergeParams: true });
+// Allows a nested route to use URL params
+const reviewRouter = express.Router({ mergeParams: true });
 
-router
+// Protected Routes
+reviewRouter.use(protect);
+reviewRouter
   .route('/')
   .get(getAllReviews)
-  .post(protect, restrictTo('user'), setTourUserIds, createReview);
+  .post(restrictTo('user'), setTourUserIds, createReview);
 
-router
+reviewRouter
   .route('/:id')
   .get(getReviewById)
-  .patch(updateReview)
-  .delete(deleteReview);
+  .patch(restrictTo('admin', 'user'), updateReview)
+  .delete(restrictTo('admin', 'user'), deleteReview);
 
-module.exports = router;
+module.exports = reviewRouter;

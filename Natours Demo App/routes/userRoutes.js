@@ -14,20 +14,27 @@ const {
   protect,
   forgotPassword,
   resetPassword,
-  updatePassword
+  updatePassword,
+  restrictTo
 } = require('../controllers/authController');
 
 const userRouter = express.Router();
 
+// Unprotected Routes
 userRouter.post('/signup', signup);
 userRouter.post('/login', login);
 userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', resetPassword);
-userRouter.patch('/updatePassword', protect, updatePassword);
-userRouter.get('/me', protect, getMe, getUserById);
-userRouter.patch('/updateMe', protect, updateMe);
-userRouter.delete('/deleteMe', protect, deleteMe);
 
+// Protected Routes
+userRouter.use(protect);
+userRouter.patch('/updatePassword', updatePassword);
+userRouter.get('/me', getMe, getUserById);
+userRouter.patch('/updateMe', updateMe);
+userRouter.delete('/deleteMe', deleteMe);
+
+// Protected Admin Routes
+userRouter.use(restrictTo('admin'));
 userRouter.route('/').get(getAllUsers);
 userRouter.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser);
 
