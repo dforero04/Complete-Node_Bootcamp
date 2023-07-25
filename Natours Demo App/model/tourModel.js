@@ -113,6 +113,9 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
@@ -144,7 +147,6 @@ tourSchema.pre('save', function (next) {
 
 // Query Middleware
 // Runs before provided mongoDB query method
-// This REGEX makes it run for all find methods
 // The THIS keyword points to the current query
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });

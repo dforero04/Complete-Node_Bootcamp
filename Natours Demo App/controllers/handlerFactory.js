@@ -12,6 +12,9 @@ exports.getAll = (Model) =>
       .sort()
       .limitFields()
       .paginate();
+
+    // The explain() function provides additional info about the query
+    // const docs = await features.query.explain();
     const docs = await features.query;
 
     res.status(200).json({
