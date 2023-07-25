@@ -7,7 +7,9 @@ const {
   deleteTour,
   aliasTopTours,
   getTourStats,
-  getMonthlyPlan
+  getMonthlyPlan,
+  getToursWithin,
+  getDistancesToTours
 } = require('../controllers/tourController');
 const ReviewRouter = require('./reviewRoutes');
 const { protect, restrictTo } = require('../controllers/authController');
@@ -25,6 +27,10 @@ router.route('/tour-stats').get(getTourStats);
 router
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
+router.route('/distances/:latlng/unit/:unit').get(getDistancesToTours);
 
 // You can also chain HTTP methods from the route method if they all use the same route
 // You can provide a middleware function inside these routes, like the checkBody() middleware function
