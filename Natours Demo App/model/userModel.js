@@ -59,6 +59,7 @@ const userSchema = mongoose.Schema({
   }
 });
 
+// COMMENT THIS CODE OUT WHEN USING IMPORT/DELETE SCRIPT!!!
 // Middleware function to check if password has been modified, and if true, then save an encrypted password
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
