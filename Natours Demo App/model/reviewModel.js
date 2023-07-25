@@ -42,6 +42,17 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  // This gets the Review document so that we can use the Tour field on it
+  this.review = await this.findOne();
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  // Actually updates the Tour document
+  await this.review.constructor.calcRatingsAverage(this.review.tour);
+});
+
 reviewSchema.post('save', function () {
   // this points to the current document
   // this.constructor points to the Model that made it
@@ -62,10 +73,17 @@ reviewSchema.statics.calcRatingsAverage = async function (tourId) {
       }
     }
   ]);
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].numRatings,
-    ratingsAverage: stats[0].avgRating
-  });
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].numRatings,
+      ratingsAverage: stats[0].avgRating
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 0
+    });
+  }
 };
 
 const Review = mongoose.model('Review', reviewSchema);
