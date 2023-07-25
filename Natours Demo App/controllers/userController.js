@@ -18,14 +18,10 @@ exports.getUserById = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
 
-exports.deleteMe = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user.id, { activeUser: false });
-
-  res.status(204).json({
-    status: 'success',
-    data: null
-  });
-});
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // Send error if user tries to update password
@@ -49,5 +45,14 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: { user: updatedUser }
+  });
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { activeUser: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null
   });
 });
