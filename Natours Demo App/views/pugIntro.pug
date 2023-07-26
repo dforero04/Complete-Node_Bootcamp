@@ -1,0 +1,20 @@
+doctype html
+html
+    head
+        //- Pug string interpolation
+        title Natours | #{tour}
+        link(rel='stylesheet' href='css/style.css')
+        link(rel='shortcut icon' type='image/png' href='img/favicon.png')
+
+    body
+        //- Examples of Buffered Code
+        h1= tour
+        h2= user.toUpperCase()
+        p This is just some text
+        //- Comment viewable as HTML comment
+        // Hello, this is an HTML comment
+
+        //- Unbuffered Code
+        - const x = 9;
+        //- Then buffered code
+        h2= 2 * x
