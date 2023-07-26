@@ -19,8 +19,14 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
   if (!tour) return next(new AppError('There is no tour with that name', 400));
 
-  res.status(200).render('tour', {
-    title: `${tour.name}`,
-    tour
-  });
+  res
+    .status(200)
+    .set(
+      'Content-Security-Policy',
+      'connect-src https://*.tiles.mapbox.com https://api.mapbox.com https://events.mapbox.com ;'
+    )
+    .render('tour', {
+      title: `${tour.name}`,
+      tour
+    });
 });
