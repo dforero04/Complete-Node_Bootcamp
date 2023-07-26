@@ -10,7 +10,6 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-////////////////////////////////////////////
 // Route Handlers
 exports.getAllTours = factory.getAll(Tour);
 exports.getTourById = factory.getOne(Tour, { path: 'reviews' });

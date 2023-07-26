@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', getOverview);
 
-router.get('/tour', getTour);
+router.get('/tour/:slug', getTour);
 
 router.get('/pugIntro', (req, res) => {
   res.status(200).render('pugIntro', {
