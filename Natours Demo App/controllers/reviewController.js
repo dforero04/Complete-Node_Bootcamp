@@ -1,4 +1,4 @@
-const Review = require('../model/reviewModel');
+const Review = require('../models/reviewModel');
 const factory = require('./handlerFactory');
 
 exports.setTourUserIds = (req, res, next) => {

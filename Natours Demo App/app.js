@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -12,6 +13,10 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+// Serving static files (always navigates to public dir)
+app.use(express.static(path.join(__dirname, 'public')));
 
 ////////////////////////////////////////////
 // Middleware
@@ -44,11 +49,6 @@ app.use(
   })
 );
 
-// Data sanitization middleware against XSS
-
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
-
 // // Custom middleware function
 // // applies to each and every request
 // app.use((req, res, next) => {
@@ -65,6 +65,12 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Routes
+app.get('/', (req, res) => {
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Daniel'
+  });
+});
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
