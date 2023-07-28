@@ -102,6 +102,29 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    const token = req.cookies.jwt;
+
+    // Verify token by promisifying verify()
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    // Check if user still exists by using decoded JWT token
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) return next();
+
+    // Check if user changed password after the token was issued
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+      return next();
+    }
+
+    // Add user info to request and continue to next middleware function
+    res.locals.user = currentUser;
+    return next();
+  }
+  next();
+});
+
 // Middleware function used to restrict specific routes to specific user roles
 // Restricts this route to roles passed in.
 exports.restrictTo =
